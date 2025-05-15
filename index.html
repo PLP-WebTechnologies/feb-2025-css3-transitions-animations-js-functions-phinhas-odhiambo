@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Image Animation + localStorage Demo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 2rem;
+    background: #f0f0f0;
+    text-align: center;
+  }
+
+  /* Container for image with background color */
+  #imageContainer {
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.4s ease;
+  }
+
+  /* Color themes for container background */
+  .color-blue { background-color: #3498db; }
+  .color-green { background-color: #27ae60; }
+  .color-red { background-color: #e74c3c; }
+
+  /* Image styling */
+  #animImage {
+    width: 200px;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  /* Bounce animation keyframes */
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+  }
+
+  /* Class to trigger bounce animation on image */
+  .bounce-animation {
+    animation: bounce 0.6s ease;
+  }
+
+  /* Hover effect on image */
+  #animImage:hover {
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+
+<h1>Image Animation + localStorage Demo</h1>
+
+<p>Select your preferred container color:</p>
+<select id="colorSelect">
+  <option value="blue">Blue</option>
+  <option value="green">Green</option>
+  <option value="red">Red</option>
+</select>
+
+<br /><br />
+
+<div id="imageContainer" tabindex="0" aria-label="Clickable image container">
+  <img
+    id="animImage"
+    src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=crop&w=200&q=80"
+    alt="Beautiful nature"
+  />
+</div>
+
+<script>
+  const container = document.getElementById('imageContainer');
+  const image = document.getElementById('animImage');
+  const colorSelect = document.getElementById('colorSelect');
+
+  // Apply color theme to container
+  function applyColor(color) {
+    container.classList.remove('color-blue', 'color-green', 'color-red');
+    container.classList.add('color-' + color);
+  }
+
+  // Load saved color preference from localStorage
+  function loadPreference() {
+    const savedColor = localStorage.getItem('containerColor') || 'blue';
+    applyColor(savedColor);
+    colorSelect.value = savedColor;
+  }
+
+  // Save preference to localStorage
+  function savePreference(color) {
+    localStorage.setItem('containerColor', color);
+  }
+
+  // Trigger bounce animation on image
+  function triggerAnimation() {
+    // Remove class to restart animation
+    image.classList.remove('bounce-animation');
+    // Trigger reflow to reset animation
+    void image.offsetWidth;
+    image.classList.add('bounce-animation');
+  }
+
+  // Event listeners
+  container.addEventListener('click', () => {
+    triggerAnimation();
+  });
+
+  colorSelect.addEventListener('change', (e) => {
+    const selectedColor = e.target.value;
+    applyColor(selectedColor);
+    savePreference(selectedColor);
+  });
+
+  // Initialize on page load
+  loadPreference();
+</script>
+
+</body>
+</html>
